@@ -2,45 +2,45 @@
 
 Can you predict whether someone earns more than $50,000 a year from their census record? This is a group project for SOR3008 at Queen's University Belfast, using the UCI Adult Census Income dataset, with Jonathan Pegrum. We presented it as three academic posters.
 
-My part was the SAS work. `Census.sas` covers the data cleaning, exploratory analysis, logistic regression and decision tree. The other models in the table below came from the group's R code.
+My part was the SAS work: data cleaning, exploratory analysis, a logistic regression and a decision tree. `Census.sas` has the code and `census_income_sas.ipynb` shows it with the results from my run. The poster also compares a random forest, neural network and naive Bayes model from the group's R code, which are not in this repo.
 
 ## Results
 
-Test set of 6,033 people.
+32,560 records, split 70% training (22,792) and 30% test (9,768). Everything below is on the test set, with a 0.5 cutoff.
 
 | Model | Accuracy | Sensitivity | Specificity | AUC |
 |---|---|---|---|---|
-| Random forest | 85.0% | 60.8% | 92.9% | 0.892 |
-| Neural network | 84.0% | 57.4% | 92.7% | 0.901 |
-| Decision tree | 83.5% | 49.1% | 94.9% | 0.845 |
-| Logistic regression | 82.5% | 52.7% | 92.3% | 0.886 |
-| Naive Bayes | 79.6% | 30.3% | 95.8% | 0.864 |
-| Always predict "under $50K" | 75.1% | 0.0% | 100% | 0.500 |
+| Logistic regression | 83.7% | 55.8% | 92.5% | 0.884 |
+| Decision tree | 83.3% | 57.1% | 91.6% | 0.865 |
+| Always predict "under $50K" | 76.0% | 0.0% | 100% | 0.500 |
 
-About 75% of people in the data earn under $50K, so the last row is the score to beat. Every model beats it, with the random forest best on accuracy and the neural network best on AUC. All of them are very good at spotting people under $50K (specificity above 92%) and much weaker at spotting high earners (sensitivity from 30% to 61%). Naive Bayes is the weakest, probably because it assumes the variables are independent when several of them are clearly related.
+About 76% of people in the test set earn under $50K, so the last row is the score to beat. Both models beat it. Both are good at spotting people under $50K (specificity above 91%) and much weaker at spotting high earners (sensitivity 56 to 57%), because the data has far more people under $50K than over. The logistic regression is slightly ahead on AUC.
 
-Net capital (capital gains and losses combined), relationship status and education came out as the strongest predictors across the models. Logistic regression is the easiest to read, and gives odds ratios for things like occupation.
+In the tree, marital status was the most important variable, followed by years of education, occupation and age group.
 
-![Income by years of education and by age](images/income_by_education_and_age.png)
+![Share earning over $50K by education group](images/income_by_education.png)
 
-![Decision tree](images/decision_tree.png)
+![Share earning over $50K by age group](images/income_by_age.png)
 
-![Random forest variable importance](images/random_forest_importance.png)
+![ROC curve, logistic regression, test data](images/roc_logistic_test.png)
+
+![ROC curve, decision tree, test data](images/roc_tree_test.png)
 
 ## Data preparation
 
-About 7% of rows had missing values (in workclass and occupation). I dropped those rows, which leaves 30,162 people. That assumes the values are missing at random, which may not be true. Rare categories were grouped together to reduce overfitting. The data was split 70% training, 10% validation and 20% test.
+Rows with a blank value in any field were dropped. Values recorded as "?" were kept, and categories were grouped to reduce overfitting (workclass, for example, has a "Missing" group). Group variables were built for age, education, occupation, marital status, race, hours worked and country.
 
 ## Limits
 
-Class imbalance is the main issue, since the models favor the larger under-$50K group. Things we would try next: k-fold cross-validation instead of one split, different probability cutoffs, interaction terms like education and occupation, and keeping the original occupation and country categories instead of grouped ones.
+Class imbalance is the main issue: the models favor the larger under-$50K group. Things to try next: k-fold cross-validation instead of one split, different probability cutoffs, and interaction terms like education and occupation.
 
 ## Files
 
 | File | What it is |
 |---|---|
-| `Census_Income.pdf` | The three posters |
 | `Census.sas` | SAS code (my part) |
+| `census_income_sas.ipynb` | The same code with the results from my run |
+| `Census_Income.pdf` | The three group posters |
 
 ## Running it
 

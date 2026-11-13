@@ -42,6 +42,4 @@ Class imbalance is the main issue: the models favor the larger under-$50K group.
 | `census_income_sas.ipynb` | The same code with the results from my run |
 | `Census_Income.pdf` | The three group posters |
 
-## Running it
 
-You need SAS. The dataset is the public UCI Adult Census Income data and is not included here. The code uses a library name and file paths from the university SAS environment, so change those first.
